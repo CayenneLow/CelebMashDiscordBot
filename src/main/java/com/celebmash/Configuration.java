@@ -1,5 +1,23 @@
 package com.celebmash;
 
+import java.util.Map;
+
+import org.yaml.snakeyaml.Yaml;
+
 public class Configuration {
-    public static String discordBotToken = "NzA0NjEwMjcxNjI4NjIzODcy.XqfpqQ.M2s0_JtOXjHG_uGsLSRRCpdDzxc";
+    public String discordBotToken;
+
+    public Configuration() {
+        Yaml yaml = new Yaml();
+        Map<String, String> props = yaml.load(Configuration.class.getClassLoader().getResourceAsStream("application-props.yml"));
+        this.setDiscordBotToken(props.get("discordBotToken"));
+    }
+
+    public String getDiscordBotToken() {
+        return this.discordBotToken;
+    }
+
+    public void setDiscordBotToken(String discordBotToken) {
+        this.discordBotToken = discordBotToken;
+    }
 }
