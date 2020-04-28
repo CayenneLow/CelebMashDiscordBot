@@ -18,6 +18,7 @@ public class Configuration {
     // Reddit Props
     private String redditApi;
     private String redditApiNSFW;
+    private String meUrl;
 
     @SuppressWarnings("unchecked")
     public Configuration() {
@@ -41,6 +42,7 @@ public class Configuration {
         Map<String, Object> redditProps = (Map<String, Object>) props.get("reddit");
         this.setRedditApi((String) redditProps.get("api"));
         this.setRedditApiNSFW((String) redditProps.get("apiNsfw"));
+        this.setMeUrl((String) redditProps.get("me"));
     }
 
     public int getDefaultNCelebs() {
@@ -81,6 +83,14 @@ public class Configuration {
 
     public void setRedditApiNSFW(String redditApiNSFW) {
         this.redditApiNSFW = redditApiNSFW;
+    }
+
+    public String getMeUrl() {
+        return this.meUrl;
+    }
+
+    public void setMeUrl(String meUrl) {
+        this.meUrl = meUrl;
     }
 
 }
