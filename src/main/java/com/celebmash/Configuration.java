@@ -17,6 +17,7 @@ public class Configuration {
     private List<Pair<String, String>> discordReacts = new ArrayList<>(); // left: Discord format, right: unicode
     // Reddit Props
     private String redditApi;
+    private String redditApiNSFW;
 
     @SuppressWarnings("unchecked")
     public Configuration() {
@@ -31,13 +32,15 @@ public class Configuration {
         this.setDiscordBotToken((String) discordProps.get("botToken"));
         List<String> reacts = (List<String>) discordProps.get("reacts");
         for (String react : reacts) {
-            Pair<String, String> pair = new ImmutablePair<String,String>(react.split(" ")[0] , react.split(" ")[1]);
+            Pair<String, String> pair = new ImmutablePair<String, String>(react.split(" ")[0], react.split(" ")[1]);
             this.discordReacts.add(pair);
         }
-        if (defaultNCelebs > reacts.size()) throw new RuntimeException("Too many celebs requested, slow down there thirsty boi");
+        if (defaultNCelebs > reacts.size())
+            throw new RuntimeException("Too many celebs requested, slow down there thirsty boi");
         // Reddit Config
         Map<String, Object> redditProps = (Map<String, Object>) props.get("reddit");
         this.setRedditApi((String) redditProps.get("api"));
+        this.setRedditApiNSFW((String) redditProps.get("apiNsfw"));
     }
 
     public int getDefaultNCelebs() {
@@ -71,4 +74,13 @@ public class Configuration {
     public void setDiscordReacts(List<Pair<String, String>> discordReacts) {
         this.discordReacts = discordReacts;
     }
+
+    public String getRedditApiNSFW() {
+        return this.redditApiNSFW;
+    }
+
+    public void setRedditApiNSFW(String redditApiNSFW) {
+        this.redditApiNSFW = redditApiNSFW;
+    }
+
 }
