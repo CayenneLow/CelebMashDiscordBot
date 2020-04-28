@@ -1,16 +1,20 @@
 package com.celebmash;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
+
+import net.dv8tion.jda.internal.utils.tuple.ImmutablePair;
+import net.dv8tion.jda.internal.utils.tuple.Pair;
 
 public class Configuration {
     private int defaultNCelebs;
 
     // Discord Props
     private String discordBotToken;
-    private List<String> discordReacts;
+    private List<Pair<String, String>> discordReacts = new ArrayList<>(); // left: Discord format, right: unicode
     // Reddit Props
     private String redditApi;
 
@@ -25,7 +29,12 @@ public class Configuration {
         // Discord Config
         Map<String, Object> discordProps = (Map<String, Object>) props.get("discord");
         this.setDiscordBotToken((String) discordProps.get("botToken"));
-        this.setDiscordReacts((List<String>) discordProps.get("reacts"));
+        List<String> reacts = (List<String>) discordProps.get("reacts");
+        for (String react : reacts) {
+            Pair<String, String> pair = new ImmutablePair<String,String>(react.split(" ")[0] , react.split(" ")[1]);
+            this.discordReacts.add(pair);
+        }
+        if (defaultNCelebs > reacts.size()) throw new RuntimeException("Too many celebs requested, slow down there thirsty boi");
         // Reddit Config
         Map<String, Object> redditProps = (Map<String, Object>) props.get("reddit");
         this.setRedditApi((String) redditProps.get("api"));
@@ -55,11 +64,11 @@ public class Configuration {
         this.redditApi = redditApi;
     }
 
-    public List<String> getDiscordReacts() {
+    public List<Pair<String, String>> getDiscordReacts() {
         return this.discordReacts;
     }
 
-    public void setDiscordReacts(List<String> discordReacts) {
+    public void setDiscordReacts(List<Pair<String, String>> discordReacts) {
         this.discordReacts = discordReacts;
     }
 }

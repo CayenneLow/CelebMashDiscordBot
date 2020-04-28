@@ -9,6 +9,8 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.internal.utils.tuple.Pair;
 
 /**
  * EventListener
@@ -35,16 +37,20 @@ public class EventListener extends ListenerAdapter {
                 // call reddit ingestor
                 RedditIngestor red = new RedditIngestor(config.getRedditApi());
                 List<Celeb> celebs = red.getHot(null, null, 0, 100, null);
-                List<String> discordReacts = config.getDiscordReacts();
+                List<Pair<String, String>> discordReacts = config.getDiscordReacts();
                 StringBuilder strBuilder = new StringBuilder();
                 for (int i = 0; i < celebs.size(); i++) {
-                    strBuilder.append(discordReacts.get(i));
+                    strBuilder.append(discordReacts.get(i).getLeft());
                     strBuilder.append(" for ");
                     strBuilder.append(celebs.get(i).toString());
                     strBuilder.append("\n");
                 }
                 log.debug(strBuilder.toString());
-                channel.sendMessage(strBuilder.toString()).queue();
+                Message msg = channel.sendMessage(strBuilder.toString()).complete();
+                for (int i = 0; i < celebs.size(); i++ ){
+                     msg.addReaction(discordReacts.get(i).getRight()).queue();
+                }
+
                 break;
         
             default:
