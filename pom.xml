@@ -36,11 +36,13 @@
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
     <dependency>
-      <groupid>org.yaml</groupid>
-      <artifactid>snakeyaml</artifactid>
-      <version>1.11</version>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>1.26</version>
     </dependency>
+
   </dependencies>
 
   <build>
