@@ -92,8 +92,8 @@ public class Configuration {
             }
         }
         // refresh in memory
+        this.setAuthHeader(this.authHeader.replaceAll(this.accessToken, accessToken));
         this.setAccessToken(accessToken);
-        this.setAuthHeader(String.format(this.authHeader, this.accessToken));
     }
 
     public int getDefaultNCelebs() {

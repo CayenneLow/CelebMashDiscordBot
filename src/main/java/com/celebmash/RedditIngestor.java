@@ -25,12 +25,12 @@ public class RedditIngestor {
                 .header("Authorization", config.getAuthHeader()).queryString("limit", limit.toString())
                 .queryString("count", count.toString()).asString();
         JSONObject responseJson = new JSONObject(response.getBody());
-        if (response.getStatus() == 403) {
+        if (response.getStatus() == 401 || response.getStatus() == 403) {
             log.info("Access token invalid, refreshing");
             refreshAccessToken();
             return getHot(after, before, count, limit, show);
         } else if (!response.isSuccess()) {
-            log.error("Something went wrong with Reddit API call");
+            log.error("Something went wrong with Reddit API call, status: {}", response.getStatus());
             return null;
         } else {
             List<Celeb> celebs = new ArrayList<>();
@@ -54,7 +54,7 @@ public class RedditIngestor {
                 .field("refresh_token", config.getRefreshToken()).asString();
         if (response.isSuccess()) {
             JSONObject obj = new JSONObject(response.getBody());
-            log.debug("New Access Token: ", obj.getString("access_token"));
+            log.debug("New Access Token: {}", obj.getString("access_token"));
             config.refreshAccessToken(obj.getString("access_token"));
         } else {
             log.error("Something went wrong with refreshing token");
