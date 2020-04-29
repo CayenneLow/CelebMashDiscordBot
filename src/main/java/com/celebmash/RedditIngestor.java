@@ -62,7 +62,8 @@ public class RedditIngestor {
     }
 
     private void hidePost(String postName) {
-        Unirest.post(endpoint + "api/hide").header("Authorization", config.getAuthHeader()).queryString("id", postName);
+        HttpResponse<String> response = Unirest.post(endpoint + "api/hide").header("Authorization", config.getAuthHeader()).queryString("id", postName).asString();
+        log.debug("Hide post status: {}", response.getStatus());
     }
 
     private String getCelebName(JSONObject json) {
