@@ -19,6 +19,13 @@ public class Configuration {
     private String redditApi;
     private String redditApiNSFW;
     private String meUrl;
+    private String authHeader;
+    private String refreshTokenUrl;
+    private String refreshTokenData;
+    private String accessToken;
+    private String refreshToken;
+    private String appClientID;
+    private String appClientSecret;
 
     @SuppressWarnings("unchecked")
     public Configuration() {
@@ -43,6 +50,13 @@ public class Configuration {
         this.setRedditApi((String) redditProps.get("api"));
         this.setRedditApiNSFW((String) redditProps.get("apiNsfw"));
         this.setMeUrl((String) redditProps.get("me"));
+        this.setAuthHeader((String) redditProps.get("authHeader"));
+        this.setAuthHeader((String) redditProps.get("refreshTokenUrl"));
+        this.setAuthHeader((String) redditProps.get("refreshTokenData"));
+        this.setAuthHeader((String) redditProps.get("accessToken"));
+        this.setAuthHeader((String) redditProps.get("refreshToken"));
+        this.setAuthHeader((String) redditProps.get("appClientID"));
+        this.setAuthHeader((String) redditProps.get("appClientSecret"));
     }
 
     public int getDefaultNCelebs() {
@@ -91,6 +105,62 @@ public class Configuration {
 
     public void setMeUrl(String meUrl) {
         this.meUrl = meUrl;
+    }
+
+    public String getAuthHeader() {
+        return this.authHeader;
+    }
+
+    public void setAuthHeader(String authHeader) {
+        this.authHeader = authHeader;
+    }
+
+    public String getRefreshTokenUrl() {
+        return this.refreshTokenUrl;
+    }
+
+    public void setRefreshTokenUrl(String refreshTokenUrl) {
+        this.refreshTokenUrl = refreshTokenUrl;
+    }
+
+    public String getRefreshTokenData() {
+        return this.refreshTokenData;
+    }
+
+    public void setRefreshTokenData(String refreshTokenData) {
+        this.refreshTokenData = refreshTokenData;
+    }
+
+    public String getAccessToken() {
+        return this.accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public String getRefreshToken() {
+        return this.refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public String getAppClientID() {
+        return this.appClientID;
+    }
+
+    public void setAppClientID(String appClientID) {
+        this.appClientID = appClientID;
+    }
+
+    public String getAppClientSecret() {
+        return this.appClientSecret;
+    }
+
+    public void setAppClientSecret(String appClientSecret) {
+        this.appClientSecret = appClientSecret;
     }
 
 }
