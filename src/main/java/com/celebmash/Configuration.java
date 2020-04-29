@@ -73,6 +73,24 @@ public class Configuration {
     }
 
     public void refreshAccessToken(String accessToken) {
+        // refresh file on disk
+        Writer writer = null;
+        try {
+            String path = Configuration.class.getClassLoader().getResource("application-props.yml").getPath();
+            File file = new File(path);
+            String content = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
+            content = content.replaceAll(this.accessToken, accessToken);
+            writer = new BufferedWriter(new FileWriter(file, false));
+            writer.write(content);
+        } catch (IOException e) {
+            log.error("Problem refreshing access token on disk");
+        } finally {
+            try {
+                if (writer != null) writer.close();
+            } catch (IOException e) {
+                log.error("Problem closing writer");
+            }
+        }
         // refresh in memory
         this.setAccessToken(accessToken);
         this.setAuthHeader(String.format(this.authHeader, this.accessToken));
