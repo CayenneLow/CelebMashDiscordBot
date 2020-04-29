@@ -13,15 +13,16 @@ import kong.unirest.json.JSONObject;
 
 public class RedditIngestor {
     private Logger log = LoggerFactory.getLogger(RedditIngestor.class);
-    private String baseApi;
+    private String endpoint;
     private Configuration config = new Configuration();
 
-    public RedditIngestor(String baseApi) {
-        this.baseApi = baseApi;
+    public RedditIngestor(String source) {
+        this.endpoint = config.getBaseApi() + source;
     }
 
     public List<Celeb> getHot(String after, String before, Integer count, Integer limit, String show) {
-        HttpResponse<String> response = Unirest.get(baseApi + "hot.json")
+        HttpResponse<String> response = Unirest.get(endpoint + "hot.json")
+                                            .header("Authorization", config.getAuthHeader())
                                             .queryString("limit", limit.toString())
                                             .queryString("count", count.toString())
                                             .asString();
@@ -38,9 +39,19 @@ public class RedditIngestor {
             JSONObject jsonData = children.getJSONObject(rand).getJSONObject("data");
             Celeb celeb = new Celeb(getCelebName(jsonData), getURL(jsonData));
             if (celebs.contains(celeb)) continue;
+            // hide post to mark as read
+            hidePost(children.getJSONObject(rand).getJSONObject("data").getString("name"));
             celebs.add(celeb);
         }
         return celebs;
+    }
+
+    private void hidePost(String postName) {
+        HttpResponse<String> response = Unirest.post(endpoint + "api/hide")
+                                        .header("Authorization", config.getAuthHeader())
+                                        .queryString("id", postName)
+                                        .asString();
+        log.info(response.getBody());
     }
 
     private String getCelebName(JSONObject json) {

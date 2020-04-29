@@ -38,13 +38,13 @@ public class EventListener extends ListenerAdapter {
                 break;
 
             case "!celeb":
-                reddit = new RedditIngestor(config.getRedditApi());
+                reddit = new RedditIngestor(config.getSource());
                 celebs = reddit.getHot(null, null, 0, 100, null);
                 send(channel, celebs.size(), parseToMessage(celebs));
                 break;
 
             case "!celebnsfw":
-                reddit = new RedditIngestor(config.getRedditApiNSFW());
+                reddit = new RedditIngestor(config.getSourceNSFW());
                 celebs = reddit.getHot(null, null, 0, 100, null);
                 send(channel, celebs.size(), parseToMessage(celebs));
 

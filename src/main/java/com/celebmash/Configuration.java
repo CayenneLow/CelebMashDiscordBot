@@ -16,8 +16,9 @@ public class Configuration {
     private String discordBotToken;
     private List<Pair<String, String>> discordReacts = new ArrayList<>(); // left: Discord format, right: unicode
     // Reddit Props
-    private String redditApi;
-    private String redditApiNSFW;
+    private String baseApi;
+    private String source;
+    private String sourceNSFW;
     private String meUrl;
     private String authHeader;
     private String refreshTokenUrl;
@@ -47,16 +48,17 @@ public class Configuration {
             throw new RuntimeException("Too many celebs requested, slow down there thirsty boi");
         // Reddit Config
         Map<String, Object> redditProps = (Map<String, Object>) props.get("reddit");
-        this.setRedditApi((String) redditProps.get("api"));
-        this.setRedditApiNSFW((String) redditProps.get("apiNsfw"));
+        this.setBaseApi((String) redditProps.get("baseApi"));
+        this.setSource((String) redditProps.get("source"));
+        this.setSourceNSFW((String) redditProps.get("sourceNsfw"));
         this.setMeUrl((String) redditProps.get("me"));
-        this.setAuthHeader((String) redditProps.get("authHeader"));
-        this.setAuthHeader((String) redditProps.get("refreshTokenUrl"));
-        this.setAuthHeader((String) redditProps.get("refreshTokenData"));
-        this.setAuthHeader((String) redditProps.get("accessToken"));
-        this.setAuthHeader((String) redditProps.get("refreshToken"));
-        this.setAuthHeader((String) redditProps.get("appClientID"));
-        this.setAuthHeader((String) redditProps.get("appClientSecret"));
+        this.setAccessToken((String) redditProps.get("accessToken"));
+        this.setRefreshToken((String) redditProps.get("refreshToken"));
+        this.setAppClientID((String) redditProps.get("appClientID"));
+        this.setAppClientSecret((String) redditProps.get("appClientSecret"));
+        this.setAuthHeader(String.format((String) redditProps.get("authHeader"), this.accessToken));
+        this.setRefreshTokenUrl(String.format((String) redditProps.get("refreshTokenUrl"), this.appClientID, this.appClientSecret));
+        this.setRefreshTokenData(String.format((String) redditProps.get("refreshTokenData"), this.refreshToken));
     }
 
     public int getDefaultNCelebs() {
@@ -75,12 +77,20 @@ public class Configuration {
         this.discordBotToken = discordBotToken;
     }
 
-    public String getRedditApi() {
-        return this.redditApi;
+    public String getBaseApi() {
+        return this.baseApi;
     }
 
-    public void setRedditApi(String redditApi) {
-        this.redditApi = redditApi;
+    public void setBaseApi(String baseApi) {
+        this.baseApi = baseApi;
+    }
+
+    public String getSource() {
+        return this.source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 
     public List<Pair<String, String>> getDiscordReacts() {
@@ -91,12 +101,12 @@ public class Configuration {
         this.discordReacts = discordReacts;
     }
 
-    public String getRedditApiNSFW() {
-        return this.redditApiNSFW;
+    public String getSourceNSFW() {
+        return this.sourceNSFW;
     }
 
-    public void setRedditApiNSFW(String redditApiNSFW) {
-        this.redditApiNSFW = redditApiNSFW;
+    public void setSourceNSFW(String sourceNSFW) {
+        this.sourceNSFW = sourceNSFW;
     }
 
     public String getMeUrl() {
