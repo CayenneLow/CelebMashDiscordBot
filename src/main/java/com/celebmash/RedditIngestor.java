@@ -27,7 +27,10 @@ public class RedditIngestor {
                                             .queryString("count", count.toString())
                                             .asString();
         JSONObject responseJson = new JSONObject(response.getBody());
-        if (response.getStatus() != 200) {
+        if (response.getStatus() == 403) {
+            log.info("Access token invalid, refreshing");
+            refreshAccessToken();
+        } else if (!response.isSuccess()) {
             log.error("Something went wrong with Reddit API call");
             return null;
         }
@@ -44,6 +47,20 @@ public class RedditIngestor {
             celebs.add(celeb);
         }
         return celebs;
+    }
+
+    public void refreshAccessToken() {
+        HttpResponse<String> response = Unirest.post(config.getRefreshTokenUrl())
+                                        .field("grant_type", "refresh_token")
+                                        .field("refresh_token", config.getRefreshToken())
+                                        .asString();
+        if (response.isSuccess()) {
+            JSONObject obj = new JSONObject(response.getBody());
+            log.debug("New Access Token: ", obj.getString("access_token"));
+            config.refreshAccessToken(obj.getString("access_token"));
+        } else {
+            log.error("Something went wrong with refreshing token");
+        }
     }
 
     private void hidePost(String postName) {

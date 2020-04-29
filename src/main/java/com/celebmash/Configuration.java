@@ -1,15 +1,25 @@
 package com.celebmash;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
 import net.dv8tion.jda.internal.utils.tuple.ImmutablePair;
 import net.dv8tion.jda.internal.utils.tuple.Pair;
 
 public class Configuration {
+    private static Logger log = LoggerFactory.getLogger(Configuration.class);
     private int defaultNCelebs;
 
     // Discord Props
@@ -57,8 +67,15 @@ public class Configuration {
         this.setAppClientID((String) redditProps.get("appClientID"));
         this.setAppClientSecret((String) redditProps.get("appClientSecret"));
         this.setAuthHeader(String.format((String) redditProps.get("authHeader"), this.accessToken));
-        this.setRefreshTokenUrl(String.format((String) redditProps.get("refreshTokenUrl"), this.appClientID, this.appClientSecret));
+        this.setRefreshTokenUrl(
+                String.format((String) redditProps.get("refreshTokenUrl"), this.appClientID, this.appClientSecret));
         this.setRefreshTokenData(String.format((String) redditProps.get("refreshTokenData"), this.refreshToken));
+    }
+
+    public void refreshAccessToken(String accessToken) {
+        // refresh in memory
+        this.setAccessToken(accessToken);
+        this.setAuthHeader(String.format(this.authHeader, this.accessToken));
     }
 
     public int getDefaultNCelebs() {

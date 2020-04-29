@@ -35,6 +35,8 @@ public class EventListener extends ListenerAdapter {
             case "!ping":
                 channel.sendMessage("Use NOED if gay").queue(); // Important to call .queue() on the RestAction returned
                                                                 // by sendMessage(...)
+                reddit = new RedditIngestor(config.getSource());
+                reddit.refreshAccessToken();
                 break;
 
             case "!celeb":
