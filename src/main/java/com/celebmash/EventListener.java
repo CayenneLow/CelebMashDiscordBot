@@ -38,7 +38,6 @@ public class EventListener extends ListenerAdapter {
         // console view (strip discord formatting)
         MessageChannel channel = event.getChannel();
         content = content.toLowerCase();
-        RedditIngestor reddit = null;
         List<Celeb> celebs = null;
         switch (content) {
             case "!ping":
@@ -47,12 +46,12 @@ public class EventListener extends ListenerAdapter {
                 break;
 
             case "!celeb":
-                celebs = reddit.getHot(null, null, 0, 100, null);
+                celebs = redditIngestor.getHot(0, 100);
                 send(channel, celebs.size(), parseToMessage(celebs));
                 break;
 
             case "!celebnsfw":
-                celebs = reddit.getHot(null, null, 0, 100, null);
+                celebs = redditIngestor.getHotNsfw(0, 100);
                 send(channel, celebs.size(), parseToMessage(celebs));
 
             default:
@@ -64,7 +63,9 @@ public class EventListener extends ListenerAdapter {
         List<String> reacts = new ArrayList<>(config.getDiscord().getReacts().keySet());
         StringBuilder strBuilder = new StringBuilder();
         for (int i = 0; i < celebs.size(); i++) {
+            strBuilder.append(":");
             strBuilder.append(reacts.get(i));
+            strBuilder.append(":");
             strBuilder.append(" for ");
             strBuilder.append(celebs.get(i).toString());
             strBuilder.append("\n");
@@ -75,8 +76,9 @@ public class EventListener extends ListenerAdapter {
 
     private void send(MessageChannel channel, int nCelebs, String message) {
         Message msg = channel.sendMessage(message).complete();
+        List<String> reacts = new ArrayList<>(config.getDiscord().getReacts().values());
         for (int i = 0; i < nCelebs; i++) {
-            msg.addReaction(config.getDiscord().getReacts().get(i)).queue();
+            msg.addReaction(reacts.get(i)).queue();
         }
     }
 

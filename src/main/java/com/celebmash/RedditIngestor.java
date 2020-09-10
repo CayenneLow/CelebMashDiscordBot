@@ -17,26 +17,48 @@ import kong.unirest.json.JSONObject;
 
 public class RedditIngestor {
     private Logger log = LoggerFactory.getLogger(RedditIngestor.class);
-    private String endpoint;
+    private String baseEndpoint;
+    private String celebEndpoint;
+    private String celebNsfwEndpoint;
     private Configuration config;
     private RedditProps redditProps;
 
     public RedditIngestor(Configuration config) {
         this.config = config;
         this.redditProps = config.getReddit();
-        this.endpoint = config.getReddit().getOauthBase();
+        this.baseEndpoint = redditProps.getOauthBase();
+        this.celebEndpoint = redditProps.getSource();
+        this.celebNsfwEndpoint = redditProps.getSourceNsfw();
     }
 
-
-    public List<Celeb> getHot(String after, String before, Integer count, Integer limit, String show) {
-        HttpResponse<String> response = Unirest.get(endpoint + "hot.json")
+    public List<Celeb> getHotNsfw(Integer count, Integer limit) {
+        HttpResponse<String> response = Unirest.get(baseEndpoint + celebNsfwEndpoint + "hot.json")
                 .header("Authorization", redditProps.getAuthHeader()).queryString("limit", limit.toString())
                 .queryString("count", count.toString()).asString();
+        List<Celeb> celebs = processResponse(response);
+        if (celebs == null) {
+            celebs = getHotNsfw(count, limit);
+        }
+        return celebs;
+    }
+
+    public List<Celeb> getHot(Integer count, Integer limit) {
+        HttpResponse<String> response = Unirest.get(baseEndpoint + celebEndpoint + "hot.json")
+                .header("Authorization", redditProps.getAuthHeader()).queryString("limit", limit.toString())
+                .queryString("count", count.toString()).asString();
+        List<Celeb> celebs = processResponse(response);
+        if (celebs == null) {
+            celebs = getHot(count, limit);
+        }
+        return celebs;
+    }
+
+    private List<Celeb> processResponse(HttpResponse<String> response) {
         JSONObject responseJson = new JSONObject(response.getBody());
         if (response.getStatus() == 401 || response.getStatus() == 403) {
             log.info("Access token invalid, refreshing");
             refreshAccessToken();
-            return getHot(after, before, count, limit, show);
+            return null;
         } else if (!response.isSuccess()) {
             log.error("Something went wrong with Reddit API call, status: {}", response.getStatus());
             return null;
@@ -58,8 +80,8 @@ public class RedditIngestor {
     }
 
     public void refreshAccessToken() {
-        HttpResponse<String> response = Unirest.post(redditProps.getRefreshTokenUrl()).field("grant_type", "refresh_token")
-                .field("refresh_token", redditProps.getRefreshToken()).asString();
+        HttpResponse<String> response = Unirest.post(redditProps.getRefreshTokenUrl())
+                .field("grant_type", "refresh_token").field("refresh_token", redditProps.getRefreshToken()).asString();
         if (response.isSuccess()) {
             JSONObject obj = new JSONObject(response.getBody());
             log.debug("New Access Token: {}", obj.getString("access_token"));
@@ -70,7 +92,8 @@ public class RedditIngestor {
     }
 
     private void hidePost(String postName) {
-        HttpResponse<String> response = Unirest.post(endpoint + "api/hide").header("Authorization", redditProps.getAuthHeader()).queryString("id", postName).asString();
+        HttpResponse<String> response = Unirest.post(baseEndpoint + "api/hide")
+                .header("Authorization", redditProps.getAuthHeader()).queryString("id", postName).asString();
         log.debug("Hide post status: {}", response.getStatus());
     }
 
