@@ -1,4 +1,4 @@
-package com.celebmash;
+package com.celebmash.DTO;
 
 public class Celeb {
     private String name;

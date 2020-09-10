@@ -3,6 +3,10 @@ package com.celebmash;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.celebmash.DTO.Celeb;
+import com.celebmash.config.Configuration;
+import com.celebmash.config.RedditProps;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,15 +18,19 @@ import kong.unirest.json.JSONObject;
 public class RedditIngestor {
     private Logger log = LoggerFactory.getLogger(RedditIngestor.class);
     private String endpoint;
-    private Configuration config = new Configuration();
+    private Configuration config;
+    private RedditProps redditProps;
 
-    public RedditIngestor(String source) {
-        this.endpoint = config.getBaseApi() + source;
+    public RedditIngestor(Configuration config) {
+        this.config = config;
+        this.redditProps = config.getReddit();
+        this.endpoint = config.getReddit().getOauthBase();
     }
+
 
     public List<Celeb> getHot(String after, String before, Integer count, Integer limit, String show) {
         HttpResponse<String> response = Unirest.get(endpoint + "hot.json")
-                .header("Authorization", config.getAuthHeader()).queryString("limit", limit.toString())
+                .header("Authorization", redditProps.getAuthHeader()).queryString("limit", limit.toString())
                 .queryString("count", count.toString()).asString();
         JSONObject responseJson = new JSONObject(response.getBody());
         if (response.getStatus() == 401 || response.getStatus() == 403) {
@@ -35,7 +43,7 @@ public class RedditIngestor {
         } else {
             List<Celeb> celebs = new ArrayList<>();
             JSONArray children = responseJson.getJSONObject("data").getJSONArray("children");
-            while (celebs.size() < config.getDefaultNCelebs()) {
+            while (celebs.size() < config.getApp().getDefaultNCeleb()) {
                 int rand = (int) Math.floor(Math.random() * (children.length()));
                 JSONObject jsonData = children.getJSONObject(rand).getJSONObject("data");
                 Celeb celeb = new Celeb(getCelebName(jsonData), getURL(jsonData));
@@ -50,8 +58,8 @@ public class RedditIngestor {
     }
 
     public void refreshAccessToken() {
-        HttpResponse<String> response = Unirest.post(config.getRefreshTokenUrl()).field("grant_type", "refresh_token")
-                .field("refresh_token", config.getRefreshToken()).asString();
+        HttpResponse<String> response = Unirest.post(redditProps.getRefreshTokenUrl()).field("grant_type", "refresh_token")
+                .field("refresh_token", redditProps.getRefreshToken()).asString();
         if (response.isSuccess()) {
             JSONObject obj = new JSONObject(response.getBody());
             log.debug("New Access Token: {}", obj.getString("access_token"));
@@ -62,7 +70,7 @@ public class RedditIngestor {
     }
 
     private void hidePost(String postName) {
-        HttpResponse<String> response = Unirest.post(endpoint + "api/hide").header("Authorization", config.getAuthHeader()).queryString("id", postName).asString();
+        HttpResponse<String> response = Unirest.post(endpoint + "api/hide").header("Authorization", redditProps.getAuthHeader()).queryString("id", postName).asString();
         log.debug("Hide post status: {}", response.getStatus());
     }
 

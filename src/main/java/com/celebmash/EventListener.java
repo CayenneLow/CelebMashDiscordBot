@@ -1,6 +1,10 @@
 package com.celebmash;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.celebmash.DTO.Celeb;
+import com.celebmash.config.Configuration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,14 +13,19 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.internal.utils.tuple.Pair;
 
 /**
  * EventListener
  */
 public class EventListener extends ListenerAdapter {
     private static Logger log = LoggerFactory.getLogger(EventListener.class);
-    private Configuration config = new Configuration();
+    private Configuration config;
+    private RedditIngestor redditIngestor;
+
+    public EventListener(Configuration config) {
+        this.config = config;
+        redditIngestor = new RedditIngestor(config);
+    }
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
@@ -38,13 +47,11 @@ public class EventListener extends ListenerAdapter {
                 break;
 
             case "!celeb":
-                reddit = new RedditIngestor(config.getSource());
                 celebs = reddit.getHot(null, null, 0, 100, null);
                 send(channel, celebs.size(), parseToMessage(celebs));
                 break;
 
             case "!celebnsfw":
-                reddit = new RedditIngestor(config.getSourceNSFW());
                 celebs = reddit.getHot(null, null, 0, 100, null);
                 send(channel, celebs.size(), parseToMessage(celebs));
 
@@ -54,10 +61,10 @@ public class EventListener extends ListenerAdapter {
     }
 
     private String parseToMessage(List<Celeb> celebs) {
-        List<Pair<String, String>> discordReacts = config.getDiscordReacts();
+        List<String> reacts = new ArrayList<>(config.getDiscord().getReacts().keySet());
         StringBuilder strBuilder = new StringBuilder();
         for (int i = 0; i < celebs.size(); i++) {
-            strBuilder.append(discordReacts.get(i).getLeft());
+            strBuilder.append(reacts.get(i));
             strBuilder.append(" for ");
             strBuilder.append(celebs.get(i).toString());
             strBuilder.append("\n");
@@ -69,7 +76,7 @@ public class EventListener extends ListenerAdapter {
     private void send(MessageChannel channel, int nCelebs, String message) {
         Message msg = channel.sendMessage(message).complete();
         for (int i = 0; i < nCelebs; i++) {
-            msg.addReaction(config.getDiscordReacts().get(i).getRight()).queue();
+            msg.addReaction(config.getDiscord().getReacts().get(i)).queue();
         }
     }
 
