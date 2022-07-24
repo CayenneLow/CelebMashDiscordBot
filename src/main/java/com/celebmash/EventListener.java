@@ -60,10 +60,12 @@ public class EventListener extends ListenerAdapter {
     }
 
     private String parseToMessage(List<Celeb> celebs) {
-        List<String> reacts = config.getDiscord().getReacts();
+        List<String> reacts = new ArrayList<>(config.getDiscord().getReacts().keySet());
         StringBuilder strBuilder = new StringBuilder();
         for (int i = 0; i < celebs.size(); i++) {
+            strBuilder.append(":");
             strBuilder.append(reacts.get(i));
+            strBuilder.append(":");
             strBuilder.append(" for ");
             strBuilder.append(celebs.get(i).toString());
             strBuilder.append("\n");
@@ -74,7 +76,7 @@ public class EventListener extends ListenerAdapter {
 
     private void send(MessageChannel channel, int nCelebs, String message) {
         Message msg = channel.sendMessage(message).complete();
-        List<String> reacts = config.getDiscord().getReacts();
+        List<String> reacts = new ArrayList<>(config.getDiscord().getReacts().values());
         for (int i = 0; i < nCelebs; i++) {
             msg.addReaction(reacts.get(i)).queue();
         }

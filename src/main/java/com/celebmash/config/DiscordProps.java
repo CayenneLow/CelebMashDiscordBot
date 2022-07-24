@@ -1,10 +1,10 @@
 package com.celebmash.config;
 
-import java.util.List;
+import java.util.Map;
 
 public class DiscordProps {
         private String botToken;
-        private List<String> reacts;
+        private Map<String, String> reacts;
 
         public String getBotToken() {
             return this.botToken;
@@ -14,11 +14,11 @@ public class DiscordProps {
             this.botToken = botToken;
         }
 
-        public List<String> getReacts() {
+        public Map<String, String> getReacts() {
             return this.reacts;
         }
 
-        public void setReacts(List<String> reacts) {
+        public void setReacts(Map<String, String> reacts) {
             this.reacts = reacts;
         }
     }

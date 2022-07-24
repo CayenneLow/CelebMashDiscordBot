@@ -1,7 +1,8 @@
 package com.celebmash.config;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +33,14 @@ public class Configuration {
             // Discord
             DiscordProps discordProps = new DiscordProps();
             discordProps.setBotToken(dotenv.get("DISCORD_BOT_TOKEN"));
-            List<String> reacts = Arrays.asList(dotenv.get("REACTS").split(","));
-            discordProps.setReacts(reacts);
+            Map<String, String> reactionMap = new HashMap<>();
+            for (String r : Arrays.asList(dotenv.get("REACTS").split(","))) {
+                String reaction = r.split(":")[0];
+                String unicode = r.split(":")[1];
+                reactionMap.put(reaction, unicode);
+            }
+            discordProps.setReacts(reactionMap);
+            log.info(reactionMap.toString());
 
             // Reddit
             RedditProps redditProps = new RedditProps();
