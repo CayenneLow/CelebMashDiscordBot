@@ -1,20 +1,17 @@
 package com.celebmash.config;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
+
+import io.github.cdimascio.dotenv.Dotenv;
 
 public class Configuration {
     private static Logger log = LoggerFactory.getLogger(Configuration.class);
     private DiscordProps discord;
     private RedditProps reddit;
-    private JDBCProps jdbc;
 
     private static Configuration instance = null;
 
@@ -23,28 +20,35 @@ public class Configuration {
     public Configuration() {
     }
 
-    public Configuration(DiscordProps discord, RedditProps reddit, AppProps app, JDBCProps jdbc) {
+    public Configuration(DiscordProps discord, RedditProps reddit, AppProps app) {
         this.discord = discord;
         this.reddit = reddit;
         this.app = app;
-        this.jdbc = jdbc;
     }
 
     public static Configuration load(boolean isProd) {
         if (instance == null) {
-            Yaml yaml = new Yaml(new Constructor(Configuration.class));
-            InputStream file;
-            if (isProd) {
-                try {
-                    file = new FileInputStream(new File("/home/ec2-user/CelebMash/application-props-prod.yml"));
-                } catch (FileNotFoundException e) {
-                    log.error("Could not find prod config file, {}", e);
-                    throw new RuntimeException();
-                }
-            } else {
-                file = Configuration.class.getClassLoader().getResourceAsStream("application-props-local.yml");
-            }
-            instance = yaml.load(file);
+            Dotenv dotenv = Dotenv.load();
+            // Discord
+            DiscordProps discordProps = new DiscordProps();
+            discordProps.setBotToken(dotenv.get("DISCORD_BOT_TOKEN"));
+            List<String> reacts = Arrays.asList(dotenv.get("REACTS").split(","));
+            discordProps.setReacts(reacts);
+
+            // Reddit
+            RedditProps redditProps = new RedditProps();
+            redditProps.setBaseUrl(dotenv.get("BASE_URL"));
+            redditProps.setSource(dotenv.get("SOURCE_SUBREDDIT"));
+            redditProps.setSourceNsfw(dotenv.get("SOURCE_NSFW_SUBREDDIT"));
+            redditProps.setRefreshTokenUrl(dotenv.get("REFRESH_TOKEN_URL"));
+            redditProps.setRefreshToken(dotenv.get("REFRESH_TOKEN"));
+            redditProps.setAuthHeader(dotenv.get("AUTH_HEADER"));
+
+            // App
+            AppProps appProps = new AppProps();
+            appProps.setDefaultNCeleb(Integer.parseInt(dotenv.get("DEFAULT_N_CELEB")));
+
+            instance = new Configuration(discordProps, redditProps, appProps);
         } 
         return instance;
     }
@@ -77,13 +81,4 @@ public class Configuration {
     public void setApp(AppProps app) {
         this.app = app;
     }
-
-    public JDBCProps getJdbc() {
-        return this.jdbc;
-    }
-
-    public void setJdbc(JDBCProps jdbc) {
-        this.jdbc = jdbc;
-    }
-
 }

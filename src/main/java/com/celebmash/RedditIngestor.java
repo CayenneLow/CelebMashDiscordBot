@@ -26,7 +26,7 @@ public class RedditIngestor {
     public RedditIngestor(Configuration config) {
         this.config = config;
         this.redditProps = config.getReddit();
-        this.baseEndpoint = redditProps.getOauthBase();
+        this.baseEndpoint = redditProps.getBaseUrl();
         this.celebEndpoint = redditProps.getSource();
         this.celebNsfwEndpoint = redditProps.getSourceNsfw();
     }
@@ -54,7 +54,7 @@ public class RedditIngestor {
     }
 
     private List<Celeb> processResponse(HttpResponse<String> response) {
-        JSONObject responseJson = new JSONObject(response.getBody());
+        log.debug(response.getBody());
         if (response.getStatus() == 401 || response.getStatus() == 403) {
             log.info("Access token invalid, refreshing");
             refreshAccessToken();
@@ -63,6 +63,7 @@ public class RedditIngestor {
             log.error("Something went wrong with Reddit API call, status: {}", response.getStatus());
             return null;
         } else {
+            JSONObject responseJson = new JSONObject(response.getBody());
             List<Celeb> celebs = new ArrayList<>();
             JSONArray children = responseJson.getJSONObject("data").getJSONArray("children");
             while (celebs.size() < config.getApp().getDefaultNCeleb()) {
@@ -80,6 +81,7 @@ public class RedditIngestor {
     }
 
     public void refreshAccessToken() {
+        log.debug("Refresh token: " + redditProps.getRefreshToken());
         HttpResponse<String> response = Unirest.post(redditProps.getRefreshTokenUrl())
                 .field("grant_type", "refresh_token").field("refresh_token", redditProps.getRefreshToken()).asString();
         if (response.isSuccess()) {

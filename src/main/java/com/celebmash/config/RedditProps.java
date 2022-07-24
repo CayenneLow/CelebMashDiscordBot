@@ -1,28 +1,19 @@
 package com.celebmash.config;
 
 public class RedditProps {
-    private String base;
-    private String oauthBase;
+    private String baseURL;
     private String source;
     private String sourceNsfw;
     private String refreshToken;
     private String authHeader;
     private String refreshTokenUrl;
 
-    public String getBase() {
-        return this.base;
+    public String getBaseUrl() {
+        return this.baseURL;
     }
 
-    public void setBase(String base) {
-        this.base = base;
-    }
-
-    public String getOauthBase() {
-        return this.oauthBase;
-    }
-
-    public void setOauthBase(String oauthBase) {
-        this.oauthBase = oauthBase;
+    public void setBaseUrl(String baseUrl) {
+        this.baseURL = baseUrl;
     }
 
     public String getSource() {
