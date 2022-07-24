@@ -1,0 +1,75 @@
+{
+	"info": {
+		"_postman_id": "e3764e74-e919-4445-88ca-39f66490b88d",
+		"name": "Reddit Auth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21779165"
+	},
+	"item": [
+		{
+			"name": "Initial request (RUN THIS IN BROWSER)",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Access Token request (need Basic Auth)",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "kQJJ7CzG7Jsr_8SAfoSymOIzGxc",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "jJpZjxeFy-o_dA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "grant_type",
+							"value": "authorization_code",
+							"type": "text"
+						},
+						{
+							"key": "code",
+							"value": "BYO4stLGQ6Kl18zsDHZZitZDEuq1rg",
+							"type": "text"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://discordapp.com/",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://www.reddit.com/api/v1/access_token",
+					"protocol": "https",
+					"host": [
+						"www",
+						"reddit",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"access_token"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
