@@ -9,6 +9,10 @@ This is a Discord bot that listens to the following commands:
 
 # Troubleshooting
 
+## Set ENV file
+
+Go to `src/resources/` and copy `.env.template` -> `.env` and substitute values with the below instructions
+
 ## Get Discord Bot Token
 
 Go to [https://discord.com/developers/applications](https://discord.com/developers/applications) and select Celeb Mash. Go to "Bot" on the left sidebar and select "Reset Token"

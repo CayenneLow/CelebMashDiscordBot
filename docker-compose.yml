@@ -1,0 +1,10 @@
+version: "3.9"
+
+services:
+  celebmash:
+    container_name: celebmash
+    environment: []
+    build:
+      dockerfile: Dockerfile
+      context: .    
+    restart: always
