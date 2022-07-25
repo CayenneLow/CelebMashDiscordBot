@@ -34,4 +34,4 @@ Username: CLIENT_ID
 Password: Secret, found in the same place as Client_ID (click `edit` on the app)
 
 - AUTH_HEADER
-This is the Basic Auth encoding, just copy from Postman since Postman will do the encoding for us. Find this under "Authorization"
+This is the Bearer Auth encoding using the access token obtained from 2nd request. Just copy from Postman since Postman will do the encoding for us. Find this under "Authorization"
