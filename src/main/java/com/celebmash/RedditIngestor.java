@@ -33,7 +33,7 @@ public class RedditIngestor {
 
     public List<Celeb> getHotNsfw(Integer count, Integer limit) {
         HttpResponse<String> response = Unirest.get(baseEndpoint + celebNsfwEndpoint + "hot.json")
-                .header("Authorization", redditProps.getAuthHeader()).queryString("limit", limit.toString())
+                .header("Authorization", redditProps.getOAuthHeader()).queryString("limit", limit.toString())
                 .queryString("count", count.toString()).asString();
         List<Celeb> celebs = processResponse(response);
         if (celebs == null) {
@@ -44,7 +44,7 @@ public class RedditIngestor {
 
     public List<Celeb> getHot(Integer count, Integer limit) {
         HttpResponse<String> response = Unirest.get(baseEndpoint + celebEndpoint + "hot.json")
-                .header("Authorization", redditProps.getAuthHeader()).queryString("limit", limit.toString())
+                .header("Authorization", redditProps.getOAuthHeader()).queryString("limit", limit.toString())
                 .queryString("count", count.toString()).asString();
         List<Celeb> celebs = processResponse(response);
         if (celebs == null) {
@@ -83,7 +83,10 @@ public class RedditIngestor {
     public void refreshAccessToken() {
         log.debug("Refresh token: " + redditProps.getRefreshToken());
         HttpResponse<String> response = Unirest.post(redditProps.getRefreshTokenUrl())
-                .field("grant_type", "refresh_token").field("refresh_token", redditProps.getRefreshToken()).asString();
+                .header("Authorization", redditProps.getRefreshAuthHeader())
+                .field("grant_type", "refresh_token")
+                .field("refresh_token", redditProps.getRefreshToken())
+                .asString();
         if (response.isSuccess()) {
             JSONObject obj = new JSONObject(response.getBody());
             log.debug("New Access Token: {}", obj.getString("access_token"));
@@ -95,7 +98,7 @@ public class RedditIngestor {
 
     private void hidePost(String postName) {
         HttpResponse<String> response = Unirest.post(baseEndpoint + "api/hide")
-                .header("Authorization", redditProps.getAuthHeader()).queryString("id", postName).asString();
+                .header("Authorization", redditProps.getOAuthHeader()).queryString("id", postName).asString();
         log.debug("Hide post status: {}", response.getStatus());
     }
 

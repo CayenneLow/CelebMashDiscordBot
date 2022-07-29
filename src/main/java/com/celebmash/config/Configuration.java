@@ -49,7 +49,8 @@ public class Configuration {
             redditProps.setSourceNsfw(dotenv.get("SOURCE_NSFW_SUBREDDIT"));
             redditProps.setRefreshTokenUrl(dotenv.get("REFRESH_TOKEN_URL"));
             redditProps.setRefreshToken(dotenv.get("REFRESH_TOKEN"));
-            redditProps.setAuthHeader(dotenv.get("AUTH_HEADER"));
+            redditProps.setOAuthHeader(dotenv.get("OAUTH_HEADER"));
+            redditProps.setRefreshAuthHeader(dotenv.get("REFRESH_AUTH_HEADER"));
 
             // App
             AppProps appProps = new AppProps();
@@ -62,7 +63,7 @@ public class Configuration {
 
     public void refreshAccessToken(String newAccessToken) {
         // refreshing in memory
-        reddit.setAuthHeader("bearer " + newAccessToken);
+        reddit.setOAuthHeader("Bearer " + newAccessToken);
     }
 
     public DiscordProps getDiscord() {

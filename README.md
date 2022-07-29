@@ -27,7 +27,7 @@ Go to [https://discord.com/developers/applications](https://discord.com/develope
 CLIENT_ID is found here: [https://www.reddit.com/prefs/apps](https://www.reddit.com/prefs/apps) (the string under `celebmash` under "developed applications")
 
 - Code
-After running 1st requsest, will be redirected to `https://discordapp.com`. Look at the URL, it should now have a parameter called `code`.
+After running 1st requsest, will be redirected to `https://discordapp.com`. Look at the URL, it should now have a parameter called `code` DO NOT TAKE THE `#_` at the end.
 
 - Basic Auth
 Username: CLIENT_ID

@@ -5,7 +5,8 @@ public class RedditProps {
     private String source;
     private String sourceNsfw;
     private String refreshToken;
-    private String authHeader;
+    private String oauthHeader;
+    private String refreshAuthHeader;
     private String refreshTokenUrl;
 
     public String getBaseUrl() {
@@ -40,12 +41,20 @@ public class RedditProps {
         this.refreshToken = refreshToken;
     }
 
-    public String getAuthHeader() {
-        return this.authHeader;
+    public String getOAuthHeader() {
+        return this.oauthHeader;
     }
 
-    public void setAuthHeader(String authHeader) {
-        this.authHeader = authHeader;
+    public void setOAuthHeader(String oauthHeader) {
+        this.oauthHeader = oauthHeader;
+    }
+
+    public String getRefreshAuthHeader() {
+        return this.refreshAuthHeader;
+    }
+
+    public void setRefreshAuthHeader(String refreshAuthHeader) {
+        this.refreshAuthHeader = refreshAuthHeader;
     }
 
     public String getRefreshTokenUrl() {
