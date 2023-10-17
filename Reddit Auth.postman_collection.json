@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e3764e74-e919-4445-88ca-39f66490b88d",
+		"_postman_id": "939d0305-48e5-4ed7-aeb4-c3fdfca7f60b",
 		"name": "Reddit Auth",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "21779165"
@@ -10,7 +10,47 @@
 			"name": "Initial request (RUN THIS IN BROWSER)",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "https://www.reddit.com/api/v1/authorize?client_id=&response_type=code&state=7f68ecff-f64e-41ac-aca9-c981bb25ba21&redirect_uri=http://google.com/&duration=permanent&scope=identity edit history read save vote",
+					"protocol": "https",
+					"host": [
+						"www",
+						"reddit",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"authorize"
+					],
+					"query": [
+						{
+							"key": "client_id",
+							"value": ""
+						},
+						{
+							"key": "response_type",
+							"value": "code"
+						},
+						{
+							"key": "state",
+							"value": "7f68ecff-f64e-41ac-aca9-c981bb25ba21"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "http://google.com/"
+						},
+						{
+							"key": "duration",
+							"value": "permanent"
+						},
+						{
+							"key": "scope",
+							"value": "identity edit history read save vote"
+						}
+					]
+				}
 			},
 			"response": []
 		},
@@ -22,12 +62,12 @@
 					"basic": [
 						{
 							"key": "password",
-							"value": "kQJJ7CzG7Jsr_8SAfoSymOIzGxc",
+							"value": "",
 							"type": "string"
 						},
 						{
 							"key": "username",
-							"value": "jJpZjxeFy-o_dA",
+							"value": "",
 							"type": "string"
 						}
 					]
@@ -44,12 +84,12 @@
 						},
 						{
 							"key": "code",
-							"value": "BYO4stLGQ6Kl18zsDHZZitZDEuq1rg",
+							"value": "",
 							"type": "text"
 						},
 						{
 							"key": "redirect_uri",
-							"value": "https://discordapp.com/",
+							"value": "http://google.com/",
 							"type": "text"
 						}
 					]
